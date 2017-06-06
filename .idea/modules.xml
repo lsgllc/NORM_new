@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/trunk/GenAsmMojo/GenAsmMojo.iml" filepath="$PROJECT_DIR$/trunk/GenAsmMojo/GenAsmMojo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trunk/NORM-Core/NORM-Core.iml" filepath="$PROJECT_DIR$/trunk/NORM-Core/NORM-Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trunk/Norm.iml" filepath="$PROJECT_DIR$/trunk/Norm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trunk/TXDMV-UOM/TXDMV-UOM.iml" filepath="$PROJECT_DIR$/trunk/TXDMV-UOM/TXDMV-UOM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trunk/TXDMV-UOM/mavendemo/mavendemo.iml" filepath="$PROJECT_DIR$/trunk/TXDMV-UOM/mavendemo/mavendemo.iml" />
+    </modules>
+  </component>
+</project>
