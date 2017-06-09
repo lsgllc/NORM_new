@@ -1,6 +1,6 @@
 package com.lsgllc.norm.kernel.graph.things.impl;
 
-import com.lsgllc.norm.kernel.graph.things.INormKey;
+import com.lsgllc.norm.kernel.graph.identity.INormKey;
 
 import java.util.UUID;
 

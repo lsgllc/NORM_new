@@ -20,5 +20,5 @@ import java.io.Serializable;
  * @description
  * @date
  */
-public interface INormPersistable<T extends INormType> extends Serializable {
+public interface INormPersistable<T extends INormType.ITyped> extends Serializable {
 }

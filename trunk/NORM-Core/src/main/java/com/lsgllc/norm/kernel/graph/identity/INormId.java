@@ -1,9 +1,6 @@
 package com.lsgllc.norm.kernel.graph.identity;
 
 import com.lsgllc.norm.kernel.graph.identity.typing.INormType;
-import com.lsgllc.norm.kernel.graph.things.IKeyValuePair;
-
-import java.util.UUID;
 
 /**
  * Created By: sameloyiv
@@ -21,7 +18,5 @@ import java.util.UUID;
  * @description
  * @date
  */
-public interface INormId<T, KV extends IKeyValuePair<?,?>> extends INormType<T>, IKeyValuePair<K, V> {
-    KV getKey();
-
+public interface INormId<T, K, V> extends INormType<T>, INormKey<K> {
 }

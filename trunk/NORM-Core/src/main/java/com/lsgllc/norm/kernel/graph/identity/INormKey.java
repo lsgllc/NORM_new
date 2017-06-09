@@ -1,14 +1,14 @@
-package com.lsgllc.norm.client.persistence;
+package com.lsgllc.norm.kernel.graph.identity;
 
-import com.lsgllc.norm.kernel.graph.identity.typing.INormType;
+import java.util.UUID;
 
 /**
  * Created By: sameloyiv
- * Date: 1/4/13
- * Time: 3:50 PM
+ * Date: 6/5/17
+ * Time: 9:36 PM
  * <p/>
  * <p/>
- * (c) Texas Department of Motor Vehicles  2013
+ * (c) Texas Department of Motor Vehicles  2017
  * ---------------------------------------------------------------------
  * Change History:
  * Name		    Date		Description
@@ -18,5 +18,7 @@ import com.lsgllc.norm.kernel.graph.identity.typing.INormType;
  * @description
  * @date
  */
-public interface IHasNormThing<T extends INormType.ITyped> {
+public interface INormKey<K> {
+    public void setKey(K key);
+    public K getKey();
 }

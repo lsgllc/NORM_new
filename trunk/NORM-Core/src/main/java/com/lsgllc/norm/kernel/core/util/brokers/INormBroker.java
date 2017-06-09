@@ -1,10 +1,11 @@
 package com.lsgllc.norm.kernel.core.util.brokers;
 
 
+import com.lsgllc.norm.kernel.graph.INormContainer;
 import com.lsgllc.norm.kernel.graph.identity.INormId;
+import com.lsgllc.norm.kernel.graph.identity.typing.INormType;
 import org.apache.camel.Component;
 
-import java.util.concurrent.ConcurrentNavigableMap;
 
 /**
  * Created By: sameloyiv
@@ -22,11 +23,8 @@ import java.util.concurrent.ConcurrentNavigableMap;
  * @description
  * @date
  */
-public interface INormBroker<K,V> extends ConcurrentNavigableMap<K,V>,Component {
-    INormId<K> getId(String key);
-    ClassLoader getContextClassLoader();
-    V get(String key);
-    void remove(String key);
-    void update(String key);
-    K add(K key, V value);
+public interface INormBroker<T ,K ,V> {
+
+    V getOntology(K ontology);
+
 }

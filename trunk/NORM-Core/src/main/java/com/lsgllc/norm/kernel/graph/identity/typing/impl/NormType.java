@@ -1,17 +1,13 @@
-package com.lsgllc.norm.kernel.core.util.brokers.impl;
+package com.lsgllc.norm.kernel.graph.identity.typing.impl;
 
-import com.lsgllc.norm.kernel.core.util.brokers.INormBroker;
-import com.lsgllc.norm.kernel.graph.INormContainer;
 import com.lsgllc.norm.kernel.graph.identity.INormId;
 import com.lsgllc.norm.kernel.graph.identity.typing.INormType;
-import org.apache.camel.*;
-
-import java.util.concurrent.*;
+import com.lsgllc.norm.util.client.INormIdentifyable;
 
 /**
  * Created By: sameloyiv
- * Date: 3/11/13
- * Time: 5:14 PM
+ * Date: 1/4/13
+ * Time: 2:44 PM
  * <p/>
  * <p/>
  * (c) Texas Department of Motor Vehicles  2013
@@ -24,10 +20,17 @@ import java.util.concurrent.*;
  * @description
  * @date
  */
-public class AbstractNormBroker<K, V> implements INormBroker<INormType.ITyped,K,V> {
+public  class NormType<T> implements INormType<T>{
+    protected INormType<T> type;
 
+    protected NormType(T type) {
+        this.type =  new NormType<T>(type);
+    }
 
-    public V getOntology(K ontology) {
-        return null;
+    public INormType<T> getType() {
+        return this.type;
+    }
+
+    public void setType(INormType<T> type) {
     }
 }

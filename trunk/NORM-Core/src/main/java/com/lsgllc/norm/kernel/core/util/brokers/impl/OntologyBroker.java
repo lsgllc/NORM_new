@@ -1,10 +1,8 @@
 package com.lsgllc.norm.kernel.core.util.brokers.impl;
 
 import com.lsgllc.norm.kernel.core.util.brokers.IOntologyBroker;
-import com.lsgllc.norm.kernel.graph.identity.INormId;
 import com.lsgllc.norm.kernel.graph.owl.INormOntology;
 import com.lsgllc.norm.kernel.graph.owl.INormOntologySegment;
-import com.lsgllc.norm.kernel.depricated.INormObjectStore;
 import com.lsgllc.norm.util.exceptions.NormSystemException;
 import com.lsgllc.norm.util.impl.GRAPH_PROPERTY_KEYS;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -92,20 +90,20 @@ public class OntologyBroker<K extends String, V extends IOntologyBroker<K,V> > e
      * @throws com.lsgllc.norm.util.exceptions.NormSystemException
      */
 
-    private INormObjectStore makeNewGraph(Map.Entry<String, Map<GRAPH_PROPERTY_KEYS, ?>> graphs) throws NormSystemException {
-//        try {
-            String key = graphs.getKey();
-        INormObjectStore retval = null;
-            packages = (List<String>) this.graphProperties.get(key).get(GRAPH_PROPERTY_KEYS.PACKAGE);
-            if (this.graphProperties.get(graphs.getKey()).containsKey(GRAPH_PROPERTY_KEYS.DMJARS)){
-                List<String> jarFiles = (List<String>) this.graphProperties.get(graphs.getKey()).get(GRAPH_PROPERTY_KEYS.DMJARS);
-//                retval=  new DynaMorphGraph<String, DynaMorphInstanceWrapper>(findCommonPackage(), new IfaceClassGenerator( ClassFinder.buildJarUrls(jarFiles),packages,Object.class.getClassLoader()));
-            }
-            return retval;
-//        } catch (DynaMorphInvalidGraphProperties e) {
-//            throw new NormSystemException(e);
-//        }
-    }
+//    private INormObjectStore makeNewGraph(Map.Entry<String, Map<GRAPH_PROPERTY_KEYS, ?>> graphs) throws NormSystemException {
+////        try {
+//            String key = graphs.getKey();
+//        INormObjectStore retval = null;
+//            packages = (List<String>) this.graphProperties.get(key).get(GRAPH_PROPERTY_KEYS.PACKAGE);
+//            if (this.graphProperties.get(graphs.getKey()).containsKey(GRAPH_PROPERTY_KEYS.DMJARS)){
+//                List<String> jarFiles = (List<String>) this.graphProperties.get(graphs.getKey()).get(GRAPH_PROPERTY_KEYS.DMJARS);
+////                retval=  new DynaMorphGraph<String, DynaMorphInstanceWrapper>(findCommonPackage(), new IfaceClassGenerator( ClassFinder.buildJarUrls(jarFiles),packages,Object.class.getClassLoader()));
+//            }
+//            return retval;
+////        } catch (DynaMorphInvalidGraphProperties e) {
+////            throw new NormSystemException(e);
+////        }
+//    }
 
     /**
      *
@@ -201,7 +199,6 @@ public class OntologyBroker<K extends String, V extends IOntologyBroker<K,V> > e
 //        }
     }
 
-    @Override
     public ClassLoader getContextClassLoader() {
         return this.springContext.getClassLoader();
     }
@@ -227,8 +224,4 @@ public class OntologyBroker<K extends String, V extends IOntologyBroker<K,V> > e
     }
 
 
-    @Override
-    public INormId<K> getId(String key) {
-        return null;
-    }
 }
