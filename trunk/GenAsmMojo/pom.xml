@@ -11,8 +11,6 @@
     <groupId>com.lsgllc.norm.mojo</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>GenAsmMojo</artifactId>
-    <!--<groupId>com.lsgllc</groupId>-->
-    <!--<version>1.0a-SNAPSHOT</version>-->
     <name>GenAsmMojo Maven Mojo</name>
     <packaging>maven-plugin</packaging>
     <url>http://maven.apache.org</url>
@@ -20,22 +18,18 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>4.1</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-tree</artifactId>
-            <version>4.1</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-util</artifactId>
-            <version>4.1</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-commons</artifactId>
-            <version>4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -47,11 +41,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.9</version>
-        </dependency>
     </dependencies>
     <build>
     <plugins>
@@ -60,9 +49,6 @@
             <artifactId>maven-plugin-plugin</artifactId>
             <version>3.2</version>
             <configuration>
-                <!--<goalPrefix>plugin</goalPrefix>-->
-                <!--<outputDirectory>target/dir</outputDirectory>-->
-                <!--<outputDirectory>target/dir</outputDirectory>-->
             </configuration>
        </plugin>
         <plugin>
