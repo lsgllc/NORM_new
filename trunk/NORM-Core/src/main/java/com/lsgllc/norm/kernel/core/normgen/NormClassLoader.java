@@ -115,6 +115,7 @@ public class NormClassLoader extends SecureClassLoader {
             } catch (Exception e) {
                 throw new ClassNotFoundException(names[0], e);
             }
+//            TODO: INCOMPLETE - Implement D$M$_ProxyTemplate for dynamic proxy generation
 //            D$M$_ProxyTemplate proxy = new D$M$_ProxyTemplate(clazz, (AsmIfaceMethodsMap) this.ifaceMethods,this.allowedPackages);
 //            try {
 //                byte[] b = proxy.dump();
@@ -131,6 +132,7 @@ public class NormClassLoader extends SecureClassLoader {
             }
             return bh.clazz;
         }
+        //TODO: INCOMPLETE - Handle case when BufHolder is null, implement proper fallback
         return null;
 
     }

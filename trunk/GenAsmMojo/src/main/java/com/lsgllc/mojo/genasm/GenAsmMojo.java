@@ -107,6 +107,7 @@ public class GenAsmMojo
 
     private String processClassFile(String fileName, String crusherPropFleName, String implSrc1) throws MojoExecutionException {
         if (fileName == null || fileName.isEmpty()) {
+            //TODO: INCOMPLETE - Add proper validation and error handling for null/empty fileName
             return null;
         }
         String fileNameMajor = getFileNameMajor(fileName);
@@ -116,6 +117,7 @@ public class GenAsmMojo
         getLog().info("Generating Byte-Code instructions using " + fileName);
         if (fileName == null || fileName.length() == 0){
             getLog().info("Parameter fileName is null");
+            //TODO: INCOMPLETE - Consider throwing exception instead of returning null for invalid fileName
             return null;
         }
 

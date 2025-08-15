@@ -51,11 +51,12 @@ public class NormDataMart implements INormDataMart<INormId<ELEMENT_TYPES>> {
 
     @Override
     public INormId<ELEMENT_TYPES> getId() {
+        //TODO: INCOMPLETE - Implement ID management for NormDataMart
         return null;
     }
 
     @Override
     public void setId(INormId<ELEMENT_TYPES> id) {
-
+        //TODO: INCOMPLETE - Implement ID setter for NormDataMart
     }
 }

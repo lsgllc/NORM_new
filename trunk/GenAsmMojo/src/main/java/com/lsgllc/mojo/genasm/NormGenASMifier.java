@@ -97,7 +97,7 @@ public class NormGenASMifier extends ASMifier {
 
     private PropertyFileMaker getPropertyFileMaker() {
 //        if (outfileName == null || outfileName.isEmpty())   {
-//
+//            //TODO: INCOMPLETE - Add proper validation for outfileName parameter
 //            return null;
 //        }
         try {
@@ -108,6 +108,7 @@ public class NormGenASMifier extends ASMifier {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        //TODO: INCOMPLETE - Add proper error handling instead of returning null
         return null;
     }
 
