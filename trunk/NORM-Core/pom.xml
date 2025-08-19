@@ -49,10 +49,13 @@
 
     <dependencies>
 
+        <!-- Commented out missing dependency - geoGoogle not available in Maven Central
         <dependency>
             <groupId>geoGoogle</groupId>
             <artifactId>geoGoogle</artifactId>
+            <optional>true</optional>
         </dependency>
+        -->
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
@@ -136,10 +139,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
+        <!-- Commented out missing dependency - firebrand not available in Maven Central
         <dependency>
             <groupId>org.firebrandocm</groupId>
             <artifactId>firebrand</artifactId>
-        </dependency>    <!--<dependency>-->
+            <optional>true</optional>
+        </dependency>
+        -->    <!--<dependency>-->
         <dependency>
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
@@ -149,11 +155,14 @@
             <artifactId>jsqlparser</artifactId>
             <version>0.7.0</version>
         </dependency>
+        <!-- Commented out missing dependency - GSQLParser not available in Maven Central
         <dependency>
             <groupId>gudusoft.gsqlparser</groupId>
             <artifactId>gsp</artifactId>
             <version>1.4.9.8</version>
+            <optional>true</optional>
         </dependency>
+        -->
     </dependencies>
 
     <build>
