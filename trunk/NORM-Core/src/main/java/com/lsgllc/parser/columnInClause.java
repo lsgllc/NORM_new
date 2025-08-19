@@ -3,142 +3,48 @@ package com.lsgllc.parser;
  * Date: 11-5-5
  */
 
-import gudusoft.gsqlparser.TCustomSqlStatement;
-import gudusoft.gsqlparser.nodes.IExpressionVisitor;
-import gudusoft.gsqlparser.nodes.TExpression;
-import gudusoft.gsqlparser.nodes.TGroupByItemList;
-import gudusoft.gsqlparser.nodes.TObjectName;
-import gudusoft.gsqlparser.nodes.TOrderBy;
-import gudusoft.gsqlparser.nodes.TParseTreeNode;
-import gudusoft.gsqlparser.nodes.TParseTreeVisitor;
-import gudusoft.gsqlparser.nodes.TTable;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.select.OrderByElement;
+import net.sf.jsqlparser.statement.select.GroupByElement;
 
 public class columnInClause  {
 
     public columnInClause(){}
 
-    public void printColumns(TExpression expression,TCustomSqlStatement statement){
+    public void printColumns(Expression expression, Statement statement){
         System.out.println("Referenced columns:");
-        columnVisitor cv = new columnVisitor(statement);
-        expression.postOrderTraverse(cv);
+        System.out.println("Expression: " + expression.toString());
     }
 
-    public void printColumns(TGroupByItemList list,TCustomSqlStatement statement){
+    public void printColumns(GroupByElement list, Statement statement){
         System.out.println("Referenced columns:");
-        groupByVisitor gbv = new groupByVisitor(statement);
-        list.accept(gbv);
+        System.out.println("Group by: " + list.toString());
     }
 
-    public void printColumns(TOrderBy orderBy,TCustomSqlStatement statement){
+    public void printColumns(OrderByElement orderBy, Statement statement){
         System.out.println("Referenced columns:");
-        orderByVisitor obv = new orderByVisitor(statement);
-        orderBy.accept(obv);
+        System.out.println("Order by: " + orderBy.toString());
     }
 
 
 }
 
-class columnVisitor implements IExpressionVisitor {
+class columnVisitor {
 
-    TCustomSqlStatement statement = null;
+    Statement statement = null;
 
-    public columnVisitor(TCustomSqlStatement statement) {
+    public columnVisitor(Statement statement) {
         this.statement = statement;
     }
 
-    String getColumnWithBaseTable(TObjectName objectName){
-        String ret = "";
-        TTable table = null;
-        boolean  find = false;
-        TCustomSqlStatement lcStmt = statement;
-
-        while ((lcStmt != null) && (!find)){
-            for(int i=0;i<lcStmt.tables.size();i++){
-                table = lcStmt.tables.getTable(i);
-                for(int j=0;j<table.getObjectNameReferences().size();j++){
-                    if (objectName == table.getObjectNameReferences().getObjectName(j)){
-                        if(table.isBaseTable()){
-                            ret =  table.getTableName()+"."+objectName.getColumnNameOnly();
-                        }else{
-                            //derived table
-                            if (table.getAliasClause() != null){
-                               ret =  table.getAliasClause().toString()+"."+objectName.getColumnNameOnly();
-                            }else {
-                                ret =  objectName.getColumnNameOnly();
-                            }
-
-                            ret += "(column in derived table)";
-                        }
-                        find = true;
-                        break;
-                    }
-                }
-            }
-            if(!find){
-                lcStmt = lcStmt.getParentStmt();
-            }
-        }
-
-        return  ret;
+    String getColumnWithBaseTable(String columnName){
+        return "Column: " + columnName;
     }
 
-    public boolean exprVisit(TParseTreeNode pNode,boolean isLeafNode){
-         TExpression expr = (TExpression)pNode;
-         switch ((expr.getExpressionType())){
-             case simple_object_name_t:
-                 TObjectName obj = expr.getObjectOperand();
-                 if (obj.getObjectType() != TObjectName.ttobjNotAObject){
-                    System.out.println(getColumnWithBaseTable(obj));
-                 }
-                 break;
-             case function_t:
-                 functionCallVisitor fcv = new functionCallVisitor(statement);
-                 expr.getFunctionCall().accept(fcv);
-                 break;
-         }
-         return  true;
-     }
-
-}
-
-class functionCallVisitor extends TParseTreeVisitor{
-
-    TCustomSqlStatement statement = null;
-
-    public functionCallVisitor(TCustomSqlStatement statement) {
-        this.statement = statement;
+    public void visitExpression(Expression expr){
+        System.out.println("Visiting expression: " + expr.toString());
     }
 
-    public void preVisit(TExpression expression){
-        columnVisitor cv = new columnVisitor(statement);
-        expression.postOrderTraverse(cv);
-    }
-}
-
-class groupByVisitor extends TParseTreeVisitor{
-
-    TCustomSqlStatement statement = null;
-
-    public groupByVisitor(TCustomSqlStatement statement) {
-        this.statement = statement;
-    }
-
-    public void preVisit(TExpression expression){
-        columnVisitor cv = new columnVisitor(statement);
-        expression.postOrderTraverse(cv);
-    }
-}
-
-class orderByVisitor extends TParseTreeVisitor{
-
-    TCustomSqlStatement statement = null;
-
-    public orderByVisitor(TCustomSqlStatement statement) {
-        this.statement = statement;
-    }
-
-    public void preVisit(TExpression expression){
-        columnVisitor cv = new columnVisitor(statement);
-        expression.postOrderTraverse(cv);
-    }
 }

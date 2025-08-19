@@ -49,13 +49,11 @@
 
     <dependencies>
 
-        <!-- Commented out missing dependency - geoGoogle not available in Maven Central
         <dependency>
             <groupId>geoGoogle</groupId>
             <artifactId>geoGoogle</artifactId>
-            <optional>true</optional>
+            <version>1.5.0</version>
         </dependency>
-        -->
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
@@ -139,31 +137,24 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
-        <!-- Commented out missing dependency - firebrand not available in Maven Central
-        <dependency>
-            <groupId>org.firebrandocm</groupId>
-            <artifactId>firebrand</artifactId>
-            <optional>true</optional>
-        </dependency>
-        -->    <!--<dependency>-->
         <dependency>
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.sf.jsqlparser</groupId>
+            <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
-            <version>0.7.0</version>
+            <version>5.3</version>
         </dependency>
-        <!-- Commented out missing dependency - GSQLParser not available in Maven Central
-        <dependency>
-            <groupId>gudusoft.gsqlparser</groupId>
-            <artifactId>gsp</artifactId>
-            <version>1.4.9.8</version>
-            <optional>true</optional>
-        </dependency>
-        -->
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>onehippo</id>
+            <name>OneHippo Repository</name>
+            <url>https://maven.onehippo.com/maven2/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
