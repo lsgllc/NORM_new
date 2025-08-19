@@ -105,27 +105,27 @@ public class ParsingDDL {
             case primary_key:
                 System.out.println("\t\tprimary key");
                 if (outline){
-                    String lcstr = "";
+                    StringBuilder lcstr = new StringBuilder();
                     if (constraint.getColumnList() != null){
                         for(int k=0;k<constraint.getColumnList().size();k++){
-                            if (k !=0 ){lcstr = lcstr+",";}
-                            lcstr = lcstr+constraint.getColumnList().getObjectName(k).toString();
+                            if (k !=0 ){lcstr.append(",");}
+                            lcstr.append(constraint.getColumnList().getObjectName(k).toString());
                         }
-                        System.out.println("\t\tprimary key columns:"+lcstr);
+                        System.out.println("\t\tprimary key columns:"+lcstr.toString());
                     }
                 }
                 break;
             case unique:
                 System.out.println("\t\tunique key");
                 if(outline){
-                    String lcstr="";
+                    StringBuilder lcstr = new StringBuilder();
                     if (constraint.getColumnList() != null){
                         for(int k=0;k<constraint.getColumnList().size();k++){
-                            if (k !=0 ){lcstr = lcstr+",";}
-                            lcstr = lcstr+constraint.getColumnList().getObjectName(k).toString();
+                            if (k !=0 ){lcstr.append(",");}
+                            lcstr.append(constraint.getColumnList().getObjectName(k).toString());
                         }
                     }
-                    System.out.println("\t\tcolumns:"+lcstr);
+                    System.out.println("\t\tcolumns:"+lcstr.toString());
                 }
                 break;
             case check:
@@ -135,23 +135,23 @@ public class ParsingDDL {
             case reference:
                 System.out.println("\t\tforeign key");
                 if(outline){
-                    String lcstr="";
+                    StringBuilder lcstr = new StringBuilder();
                     if (constraint.getColumnList() != null){
                         for(int k=0;k<constraint.getColumnList().size();k++){
-                            if (k !=0 ){lcstr = lcstr+",";}
-                            lcstr = lcstr+constraint.getColumnList().getObjectName(k).toString();
+                            if (k !=0 ){lcstr.append(",");}
+                            lcstr.append(constraint.getColumnList().getObjectName(k).toString());
                         }
                     }
-                    System.out.println("\t\tcolumns:"+lcstr);
+                    System.out.println("\t\tcolumns:"+lcstr.toString());
                 }
                 System.out.println("\t\treferenced table:"+constraint.getReferencedObject().toString());
                 if (constraint.getReferencedColumnList() != null){
-                    String lcstr="";
+                    StringBuilder lcstr = new StringBuilder();
                     for(int k=0;k<constraint.getReferencedColumnList().size();k++){
-                        if (k !=0 ){lcstr = lcstr+",";}
-                        lcstr = lcstr+constraint.getReferencedColumnList().getObjectName(k).toString();
+                        if (k !=0 ){lcstr.append(",");}
+                        lcstr.append(constraint.getReferencedColumnList().getObjectName(k).toString());
                     }
-                    System.out.println("\t\treferenced columns:"+lcstr);
+                    System.out.println("\t\treferenced columns:"+lcstr.toString());
                 }
                 break;
             default:
