@@ -1,16 +1,11 @@
 package com.lsgllc.parser;
 
-import gudusoft.gsqlparser.EDbVendor;
-import gudusoft.gsqlparser.TGSqlParser;
-import gudusoft.gsqlparser.nodes.TObjectName;
-import gudusoft.gsqlparser.nodes.TTable;
-import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
-import gudusoft.gsqlparser.stmt.TSelectSqlStatement;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.create.table.CreateTable;
-import sun.font.CreatedFontTracker;
 
 import java.io.StringReader;
 
@@ -154,16 +149,17 @@ public class JSqlTester {
         if (args[0].isEmpty()) {
             return;
         }
-        TGSqlParser sqlparser = new TGSqlParser(EDbVendor.dbvdb2);
-        sqlparser.sqltext = args[0];
-        sqlparser.parse();
-        TCreateTableSqlStatement createTable = (TCreateTableSqlStatement)sqlparser.sqlstatements.get(0);
-        TTable table = createTable.tables.getTable(0);
-        TObjectName o;
-        System.out.println("Create statement, find out what clause a TObjectName belongs to:");
-        for(int i=0;i<table.getCteColomnReferences().size();i++){
-            o = table.getCteColomnReferences().getObjectName(i);
-            System.out.println(o.toString()+"\t\t\tlocation:"+o.getColumnNameOnly());
+        try {
+            Statement statement = CCJSqlParserUtil.parse(args[0]);
+            if (statement instanceof CreateTable) {
+                CreateTable createTable = (CreateTable) statement;
+                System.out.println("Create statement parsed: " + createTable.getTable().getName());
+                if (createTable.getColumnDefinitions() != null) {
+                    System.out.println("Columns: " + createTable.getColumnDefinitions().toString());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Parse error: " + e.getMessage());
         }
 
 

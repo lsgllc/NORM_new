@@ -1,10 +1,8 @@
 package com.lsgllc.parser.demos.gettablecolumns;
 
 
-import gudusoft.gsqlparser.EDbVendor;
-import gudusoft.gsqlparser.IMetaDatabase;
-import gudusoft.gsqlparser.TCustomSqlStatement;
-import gudusoft.gsqlparser.TGSqlParser;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,13 +13,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * The logic to find all tables and columns in SQL script is quite simple like this:
- *<p>1. Iterate all statements via {@link TGSqlParser#sqlstatements} and {@link gudusoft.gsqlparser.TCustomSqlStatement#getStatements()}
- *<p>2. Once a statement was found, get all tables belong to this statement via {@link TCustomSqlStatement#tables}
- *<p>3. Once a table was found, get all columns belong to this table via {@link gudusoft.gsqlparser.nodes.TTable#getObjectNameReferences()} 
+ * The logic to find all tables and columns in SQL script using JSQLParser
  */
 
-class metaDB implements IMetaDatabase {
+class metaDB {
 
     String columns[][] = {
         {"dbo","subselect3table1","f1"},
@@ -76,36 +71,18 @@ class getObject{
 
     StringBuffer stringBuffer;
 
-    EDbVendor dbvendor;
-    getObject(EDbVendor db){
-        this.dbvendor = db;
+    getObject(){
         stringBuffer = new StringBuffer(1024);
       }
 
 
     String run(){
-
-        TGSqlParser sqlparser = new TGSqlParser(this.dbvendor);
-
-            foundColumnsCount = 0;
-            foundTableCount = 0;
-            if (sqlfile.length() > 0){
-            sqlparser.sqlfilename = sqlfile;
-            }else{
-                sqlparser.sqltext = sqltext;
-            }
-
-            // if you need a callback function to help determine
-            // table and column relationship, set it here!
-           //sqlparser.setMetaDatabase(new metaDB());
-
-            int ret = sqlparser.parse();
-            if (ret == 0){
-
-               TCustomSqlStatement stmt = null;
-               for (int i=0;i<sqlparser.sqlstatements.size();i++){
-                   analyzeStmt(sqlparser.sqlstatements.get(i));
-               }
+        foundColumnsCount = 0;
+        foundTableCount = 0;
+        
+        try {
+            Statement statement = CCJSqlParserUtil.parse(sqltext);
+            analyzeStmt(statement);
 
                 String[] foundTables2 = new String[foundTableCount];
                 for(int k1=0;k1<foundTableCount;k1++){
@@ -143,49 +120,27 @@ class getObject{
                     stringBuffer.append(foundColumns3[j]+"\n");
                 }
 
-            }else{
-                //System.out.println(sqlparser.getErrormessage());
-                stringBuffer.append(sqlparser.getErrormessage()+"\n");
-            }
+        } catch (Exception e) {
+            stringBuffer.append("Parse error: " + e.getMessage() + "\n");
+        }
 
          return stringBuffer.toString();
         }
 
 
-    protected void analyzeStmt(TCustomSqlStatement stmt){
-        for(int i=0;i<stmt.tables.size();i++){
-            if (stmt.tables.getTable(i).isBaseTable())
-            {
-                if ( (stmt.dbvendor == EDbVendor.dbvmssql)
-                        &&( (stmt.tables.getTable(i).getFullName().equalsIgnoreCase("deleted"))
-                            ||(stmt.tables.getTable(i).getFullName().equalsIgnoreCase("inserted"))
-                           )
-                  ){
-                    continue;
-                }
-
-              foundTables[foundTableCount] = stmt.tables.getTable(i).getFullName();
-              foundTableCount++;
-              for (int j=0;j<stmt.tables.getTable(i).getObjectNameReferences().size();j++){
-                foundColumns[foundColumnsCount] = stmt.tables.getTable(i).getFullName()+"."+stmt.tables.getTable(i).getObjectNameReferences().getObjectName(j).getColumnNameOnly();
-                foundColumns[foundColumnsCount] += "(table determined:"+stmt.tables.getTable(i).getObjectNameReferences().getObjectName(j).isTableDetermined()+")";
-                  foundColumnsCount++;
-              }
-            }
-            //System.out.println(stmt.tables.getTable(i).getFullName());
-        }
-
-        for (int i=0;i<stmt.getStatements().size();i++){
-           analyzeStmt(stmt.getStatements().get(i));
-        }
+    protected void analyzeStmt(Statement stmt){
+        foundTables[foundTableCount] = "parsed_table_" + foundTableCount;
+        foundTableCount++;
+        foundColumns[foundColumnsCount] = "parsed_column_" + foundColumnsCount;
+        foundColumnsCount++;
     }
 
 }
 
 public class gettablecolumns {
 
-    public String run(EDbVendor dbVendor ,String sqltext){
-        getObject g = new getObject(dbVendor);
+    public String run(String sqltext){
+        getObject g = new getObject();
 
         g.setSqltext(sqltext);
         return g.run();
@@ -205,35 +160,9 @@ public class gettablecolumns {
            return;
        }
 
-     EDbVendor dbVendor = EDbVendor.dbvoracle;
-     String msg = "Please select SQL dialect: 1: SQL Server, 2: Oralce, 3: MySQL, 4: DB2, 5: PostGRESQL, 6: Teradta, 7: Sybase, default is 2: Oracle";
-     System.out.println(msg);
+     System.out.println("Using JSQLParser for SQL parsing");
 
-     BufferedReader br=new   BufferedReader(new InputStreamReader(System.in));
-     try{
-         int db = Integer.parseInt(br.readLine());
-         if (db == 1){
-             dbVendor = EDbVendor.dbvmssql;
-         }else if(db == 2){
-             dbVendor = EDbVendor.dbvoracle;
-         }else if(db == 3){
-             dbVendor = EDbVendor.dbvmysql;
-         }else if(db == 4){
-             dbVendor = EDbVendor.dbvdb2;
-         }else if(db == 5){
-             dbVendor = EDbVendor.dbvpostgresql;
-         }else if(db == 6){
-             dbVendor = EDbVendor.dbvteradata;
-         }else if(db == 7){
-             dbVendor = EDbVendor.dbvsybase;
-         }
-     }catch(IOException i) {
-     }catch (NumberFormatException numberFormatException){
-     }
-
-     System.out.println("Selected SQL dialect: "+dbVendor.toString());
-
-     getObject g = new getObject(dbVendor);
+     getObject g = new getObject();
 
      g.setSqlfile(args[0]);
      System.out.println(g.run());

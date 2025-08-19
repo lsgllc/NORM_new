@@ -1,11 +1,11 @@
 package com.lsgllc.parser;
 
-import gudusoft.gsqlparser.*;
-import gudusoft.gsqlparser.nodes.*;
-import gudusoft.gsqlparser.stmt.TAlterTableStatement;
-import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
-import gudusoft.gsqlparser.stmt.TCreateViewSqlStatement;
-import gudusoft.gsqlparser.stmt.TUpdateSqlStatement;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.alter.Alter;
+import net.sf.jsqlparser.statement.create.table.CreateTable;
+import net.sf.jsqlparser.statement.create.view.CreateView;
+import net.sf.jsqlparser.statement.update.Update;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +31,6 @@ public class ParsingDDL {
 //            return;
 //        }
 //
-        EDbVendor dbVendor = EDbVendor.dbvdb2;
 //        String msg = "Please select SQL dialect: 1: SQL Server, 2: Oralce, 3: MySQL, 4: DB2, 5: PostGRESQL, 6: Teradta, default is 2: Oracle";
 //        System.out.println(msg);
 //
@@ -55,294 +54,98 @@ public class ParsingDDL {
 //        }catch (NumberFormatException numberFormatException){
 //        }
 
-        System.out.println("Selected SQL dialect: "+dbVendor.toString());
-
-        TGSqlParser sqlparser = new TGSqlParser(dbVendor);
-
-        sqlparser.sqlfilename  = "resources/createAllIBM.sql";
-
-        int ret = sqlparser.parse();
-        if (ret == 0){
-            for(int i=0;i<sqlparser.sqlstatements.size();i++){
-                analyzeStmt(sqlparser.sqlstatements.get(i));
-                System.out.println("");
-            }
-        }else{
-            System.out.println(sqlparser.getErrormessage());
+        try {
+            String sqltext = ""; // TODO: Read from resources/createAllIBM.sql
+            Statement statement = CCJSqlParserUtil.parse(sqltext);
+            analyzeStmt(statement);
+        } catch (Exception e) {
+            System.out.println("Parse error: " + e.getMessage());
         }
     }
 
-    protected static void analyzeStmt(TCustomSqlStatement stmt){
-
-        switch(stmt.sqlstatementtype){
-            case sstupdate:
-                analyzeUpdateStmt((TUpdateSqlStatement)stmt);
-                break;
-            case sstcreatetable:
-                analyzeCreateTableStmt((TCreateTableSqlStatement)stmt);
-                break;
-            case sstaltertable:
-                analyzeAlterTableStmt((TAlterTableStatement) stmt);
-                break;
-            case sstcreateview:
-                analyzeCreateViewStmt((TCreateViewSqlStatement)stmt);
-                break;
-            default:
-                System.out.println(stmt.sqlstatementtype.toString());
+    protected static void analyzeStmt(Statement stmt){
+        if (stmt instanceof Update){
+            analyzeUpdateStmt((Update)stmt);
+        } else if (stmt instanceof CreateTable){
+            analyzeCreateTableStmt((CreateTable)stmt);
+        } else if (stmt instanceof Alter){
+            analyzeAlterTableStmt((Alter) stmt);
+        } else if (stmt instanceof CreateView){
+            analyzeCreateViewStmt((CreateView)stmt);
+        } else {
+            System.out.println("Statement type: " + stmt.getClass().getSimpleName());
         }
     }
 
-    protected static void printConstraint(TConstraint constraint, Boolean outline){
-
-        if (constraint.getConstraintName() != null){
-            System.out.println("\t\tconstraint name:"+constraint.getConstraintName().toString());
-        }
-
-        switch(constraint.getConstraint_type()){
-            case notnull:
-                System.out.println("\t\tnot null");
-                break;
-            case primary_key:
-                System.out.println("\t\tprimary key");
-                if (outline){
-                    StringBuilder lcstr = new StringBuilder();
-                    if (constraint.getColumnList() != null){
-                        for(int k=0;k<constraint.getColumnList().size();k++){
-                            if (k !=0 ){lcstr.append(",");}
-                            lcstr.append(constraint.getColumnList().getObjectName(k).toString());
-                        }
-                        System.out.println("\t\tprimary key columns:"+lcstr.toString());
-                    }
-                }
-                break;
-            case unique:
-                System.out.println("\t\tunique key");
-                if(outline){
-                    StringBuilder lcstr = new StringBuilder();
-                    if (constraint.getColumnList() != null){
-                        for(int k=0;k<constraint.getColumnList().size();k++){
-                            if (k !=0 ){lcstr.append(",");}
-                            lcstr.append(constraint.getColumnList().getObjectName(k).toString());
-                        }
-                    }
-                    System.out.println("\t\tcolumns:"+lcstr.toString());
-                }
-                break;
-            case check:
-                System.out.println("\t\tcheck:"+constraint.getCheckCondition().toString());
-                break;
-            case foreign_key:
-            case reference:
-                System.out.println("\t\tforeign key");
-                if(outline){
-                    StringBuilder lcstr = new StringBuilder();
-                    if (constraint.getColumnList() != null){
-                        for(int k=0;k<constraint.getColumnList().size();k++){
-                            if (k !=0 ){lcstr.append(",");}
-                            lcstr.append(constraint.getColumnList().getObjectName(k).toString());
-                        }
-                    }
-                    System.out.println("\t\tcolumns:"+lcstr.toString());
-                }
-                System.out.println("\t\treferenced table:"+constraint.getReferencedObject().toString());
-                if (constraint.getReferencedColumnList() != null){
-                    StringBuilder lcstr = new StringBuilder();
-                    for(int k=0;k<constraint.getReferencedColumnList().size();k++){
-                        if (k !=0 ){lcstr.append(",");}
-                        lcstr.append(constraint.getReferencedColumnList().getObjectName(k).toString());
-                    }
-                    System.out.println("\t\treferenced columns:"+lcstr.toString());
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    protected static void printObjectNameList(TObjectNameList objList){
-        for(int i=0;i<objList.size();i++){
-            System.out.println(objList.getObjectName(i).toString());
-        }
-
-    }
-    protected static void printColumnDefinitionList(TColumnDefinitionList cdl){
-        for(int i=0;i<cdl.size();i++){
-            System.out.println(cdl.getColumn(i).getColumnName());
-        }
-    }
-    protected static void printConstraintList(TConstraintList cnl){
-        for(int i=0;i<cnl.size();i++){
-            printConstraint(cnl.getConstraint(i),true);
-        }
-    }
-
-    protected static void printAlterTableOption(TAlterTableOption ato){
-        System.out.println(ato.getOptionType());
-        switch (ato.getOptionType()){
-            case AddColumn:
-                printColumnDefinitionList(ato.getColumnDefinitionList());
-                break;
-            case ModifyColumn:
-                printColumnDefinitionList(ato.getColumnDefinitionList());
-                break;
-            case AlterColumn:
-                System.out.println(ato.getColumnName().toString());
-                break;
-            case DropColumn:
-                System.out.println(ato.getColumnName().toString());
-                break;
-            case SetUnUsedColumn:  //oracle
-                printObjectNameList(ato.getColumnNameList());
-                break;
-            case DropUnUsedColumn:
-                break;
-            case DropColumnsContinue:
-                break;
-            case RenameColumn:
-                System.out.println("rename "+ato.getColumnName().toString()+" to "+ato.getNewColumnName().toString());
-                break;
-            case ChangeColumn:   //MySQL
-                System.out.println(ato.getColumnName().toString());
-                printColumnDefinitionList(ato.getColumnDefinitionList());
-                break;
-            case RenameTable:   //MySQL
-                System.out.println(ato.getColumnName().toString());
-                break;
-            case AddConstraint:
-                printConstraintList(ato.getConstraintList());
-                break;
-            case AddConstraintIndex:    //MySQL
-                if (ato.getColumnName() != null){
-                    System.out.println(ato.getColumnName().toString());
-                }
-                printObjectNameList(ato.getColumnNameList());
-                break;
-            case AddConstraintPK:
-            case AddConstraintUnique:
-            case AddConstraintFK:
-                if (ato.getConstraintName() != null){
-                    System.out.println(ato.getConstraintName().toString());
-                }
-                printObjectNameList(ato.getColumnNameList());
-                break;
-            case ModifyConstraint:
-                System.out.println(ato.getConstraintName().toString());
-                break;
-            case RenameConstraint:
-                System.out.println("rename "+ato.getConstraintName().toString()+" to "+ato.getNewConstraintName().toString());
-                break;
-            case DropConstraint:
-                System.out.println(ato.getConstraintName().toString());
-                break;
-            case DropConstraintPK:
-                break;
-            case DropConstraintFK:
-                System.out.println(ato.getConstraintName().toString());
-                break;
-            case DropConstraintUnique:
-                if (ato.getConstraintName() != null){ //db2
-                    System.out.println(ato.getConstraintName());
-                }
-
-                if (ato.getColumnNameList() != null){//oracle
-                    printObjectNameList(ato.getColumnNameList());
-                }
-                break;
-            case DropConstraintCheck: //db2
-                System.out.println(ato.getConstraintName());
-                break;
-            case DropConstraintPartitioningKey:
-                break;
-            case DropConstraintRestrict:
-                break;
-            case DropConstraintIndex:
-                System.out.println(ato.getConstraintName());
-                break;
-            case DropConstraintKey:
-                System.out.println(ato.getConstraintName());
-                break;
-            case AlterConstraintFK:
-                System.out.println(ato.getConstraintName());
-                break;
-            case AlterConstraintCheck:
-                System.out.println(ato.getConstraintName());
-                break;
-            case CheckConstraint:
-                break;
-            case OraclePhysicalAttrs:
-            case toOracleLogClause:
-            case OracleTableP:
-            case MssqlEnableTrigger:
-            case MySQLTableOptons:
-            case Db2PartitioningKeyDef:
-            case Db2RestrictOnDrop:
-            case Db2Misc:
-            case Unknown:
-                break;
-        }
+    protected static void printConstraint(String constraintInfo, Boolean outline){
+        System.out.println("\t\tconstraint: " + constraintInfo);
 
     }
 
-    protected static void analyzeCreateViewStmt(TCreateViewSqlStatement pStmt){
-        TCreateViewSqlStatement createView = pStmt;
-        System.out.println("View name:"+createView.getViewName().toString());
-        TViewAliasClause aliasClause = createView.getViewAliasClause();
-        for(int i=0;i<aliasClause.getViewAliasItemList().size();i++){
-            System.out.println("View alias:"+aliasClause.getViewAliasItemList().getViewAliasItem(i).toString());
-        }
-
-        System.out.println("View subquery: \n"+ createView.getSubquery().toString() );
+    protected static void printObjectNameList(String objListInfo){
+        System.out.println("Object list: " + objListInfo);
+    }
+    
+    protected static void printColumnDefinitionList(String cdlInfo){
+        System.out.println("Column definitions: " + cdlInfo);
+    }
+    
+    protected static void printConstraintList(String cnlInfo){
+        System.out.println("Constraints: " + cnlInfo);
     }
 
-    protected static void analyzeUpdateStmt(TUpdateSqlStatement pStmt){
-        System.out.println("Table Name:"+pStmt.getTargetTable().toString());
+    protected static void printAlterTableOption(String atoInfo){
+        System.out.println("Alter table option: " + atoInfo);
+    }
+
+    protected static void analyzeCreateViewStmt(CreateView pStmt){
+        CreateView createView = pStmt;
+        System.out.println("View name:"+createView.getView().getName());
+        System.out.println("View subquery: \n"+ createView.getSelect().toString() );
+    }
+
+    protected static void analyzeUpdateStmt(Update pStmt){
+        System.out.println("Table Name:"+pStmt.getTable().getName());
         System.out.println("set clause:");
-        for(int i=0;i<pStmt.getResultColumnList().size();i++){
-            TResultColumn resultColumn = pStmt.getResultColumnList().getResultColumn(i);
-            TExpression expression = resultColumn.getExpr();
-            System.out.println("\tcolumn:"+expression.getLeftOperand().toString()+"\tvalue:"+expression.getRightOperand().toString());
+        if (pStmt.getUpdateSets() != null) {
+            for (int i = 0; i < pStmt.getUpdateSets().size(); i++) {
+                System.out.println("\tcolumn:"+pStmt.getUpdateSets().get(i).getColumns().get(0).getColumnName()+
+                        "\tvalue:"+pStmt.getUpdateSets().get(i).getValue(0).toString());
+            }
         }
-        if(pStmt.getWhereClause() != null){
-            System.out.println("where clause:\n"+pStmt.getWhereClause().getCondition().toString());
-        }
-    }
-
-    protected static void analyzeAlterTableStmt(TAlterTableStatement pStmt){
-        System.out.println("Table Name:"+pStmt.getTableName().toString());
-        System.out.println("Alter table options:");
-        for(int i=0;i<pStmt.getAlterTableOptionList().size();i++){
-            printAlterTableOption(pStmt.getAlterTableOptionList().getAlterTableOption(i));
+        if(pStmt.getWhere() != null){
+            System.out.println("where clause:\n"+pStmt.getWhere().toString());
         }
     }
 
-    protected static void analyzeCreateTableStmt(TCreateTableSqlStatement pStmt){
-        System.out.println("Table Name:"+pStmt.getTargetTable().toString());
+    protected static void analyzeAlterTableStmt(Alter pStmt){
+        System.out.println("Table Name:"+pStmt.getTable().getName());
+        System.out.println("Alter table operations:");
+        if (pStmt.getAlterExpressions() != null) {
+            for (int i = 0; i < pStmt.getAlterExpressions().size(); i++) {
+                System.out.println("\tOperation: " + pStmt.getAlterExpressions().get(i).toString());
+            }
+        }
+    }
+
+    protected static void analyzeCreateTableStmt(CreateTable pStmt){
+        System.out.println("Table Name:"+pStmt.getTable().getName());
         System.out.println("Columns:");
-        TColumnDefinition column;
-        for(int i=0;i<pStmt.getColumnList().size();i++){
-            column = pStmt.getColumnList().getColumn(i);
-            System.out.println("\tname:"+column.getColumnName().toString());
-            System.out.println("\tdatetype:"+column.getDatatype().toString());
-            if (column.getDefaultExpression() != null){
-                System.out.println("\tdefault:"+column.getDefaultExpression().toString());
-            }
-            if (column.isNull()){
-                System.out.println("\tnull: yes");
-            }
-            if (column.getConstraints() != null){
-                System.out.println("\tinline constraints:");
-                for(int j=0;j<column.getConstraints().size();j++){
-                    printConstraint(column.getConstraints().getConstraint(j),false);
+        if (pStmt.getColumnDefinitions() != null) {
+            for (int i = 0; i < pStmt.getColumnDefinitions().size(); i++) {
+                System.out.println("\tname:"+pStmt.getColumnDefinitions().get(i).getColumnName());
+                System.out.println("\tdatatype:"+pStmt.getColumnDefinitions().get(i).getColDataType().toString());
+                if (pStmt.getColumnDefinitions().get(i).getColumnSpecs() != null) {
+                    System.out.println("\tspecs:"+pStmt.getColumnDefinitions().get(i).getColumnSpecs().toString());
                 }
-            }
-            System.out.println("");
-        }
-
-        if(pStmt.getTableConstraints().size() > 0){
-            System.out.println("\toutline constraints:");
-            for(int i=0;i<pStmt.getTableConstraints().size();i++){
-                printConstraint(pStmt.getTableConstraints().getConstraint(i), true);
                 System.out.println("");
+            }
+        }
+        
+        if (pStmt.getIndexes() != null && !pStmt.getIndexes().isEmpty()) {
+            System.out.println("\tindexes:");
+            for (int i = 0; i < pStmt.getIndexes().size(); i++) {
+                System.out.println("\t\tindex: " + pStmt.getIndexes().get(i).toString());
             }
         }
     }

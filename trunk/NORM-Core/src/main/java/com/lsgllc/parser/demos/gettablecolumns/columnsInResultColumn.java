@@ -5,46 +5,33 @@ package com.lsgllc.parser.demos.gettablecolumns;
  * ref : http://www.dpriver.com/blog/list-of-demos-illustrate-how-to-use-general-sql-parser/get-referenced-table-column-in-a-select-list-item/
  */
 
-import gudusoft.gsqlparser.EDbVendor;
-import gudusoft.gsqlparser.TCustomSqlStatement;
-import gudusoft.gsqlparser.TGSqlParser;
-import gudusoft.gsqlparser.nodes.*;
-import gudusoft.gsqlparser.stmt.TSelectSqlStatement;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.Select;
 import com.lsgllc.parser.columnInClause;
 
 public class columnsInResultColumn {
 
     public static void main(String args[])
      {
-         TGSqlParser sqlparser = new TGSqlParser(EDbVendor.dbvoracle);
-         sqlparser.sqltext  = "select sal.income + sal.bonus * emp.age + 5 as real_sal,\n" +
-                 "       emp.name as title \n" +
-                 "from employee emp, salary sal \n" +
-                 "where emp.id=sal.eid";
-         int ret = sqlparser.parse();
-         if (ret == 0){
-             TSelectSqlStatement select = (TSelectSqlStatement)sqlparser.sqlstatements.get(0);
-             TResultColumnList columns = select.getResultColumnList();
-
-             for(int i = 0; i < columns.size();i++){
-                 printColumns(columns.getResultColumn(i),select);
+         try {
+             String sql = "select sal.income + sal.bonus * emp.age + 5 as real_sal,\n" +
+                     "       emp.name as title \n" +
+                     "from employee emp, salary sal \n" +
+                     "where emp.id=sal.eid";
+             Statement statement = CCJSqlParserUtil.parse(sql);
+             if (statement instanceof Select) {
+                 Select select = (Select) statement;
+                 printColumns(select);
              }
-
-         }else{
-             System.out.println(sqlparser.getErrormessage());
+         } catch (Exception e) {
+             System.out.println("Parse error: " + e.getMessage());
          }
 
      }
 
-     static void printColumns(TResultColumn cl,TCustomSqlStatement sqlStatement){
-
-         if(cl.getAliasClause() != null){
-             System.out.println("\nResult column:" + cl.getAliasClause().toString());
-         }else{
-            System.out.println("\nResult column:" + cl.getExpr().toString());
-         }
-
-         new columnInClause().printColumns(cl.getExpr(),sqlStatement);
+     static void printColumns(Select select){
+         System.out.println("Select statement columns: " + select.toString());
      }
 }
 
