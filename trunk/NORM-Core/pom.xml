@@ -160,7 +160,6 @@
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <version>1.7</version>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <executions>
                     <execution>
@@ -184,7 +183,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -198,14 +196,12 @@
             <plugin>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-maven-plugin</artifactId>
-                <version>2.10.3</version>
             </plugin>
 
             <!-- Allows the example to be run via 'mvn compile exec:java' -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
                 <configuration>
                     <mainClass>com.lsgllc.camel.datamodel.Main</mainClass>
                     <includePluginDependencies>false</includePluginDependencies>
@@ -213,8 +209,8 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
                 <configuration>
                     <forkedProcessTimeoutInSeconds>300</forkedProcessTimeoutInSeconds>
                     <childDelegation>false</childDelegation>
@@ -319,7 +315,6 @@
                 <plugin>
                     <groupId>org.apache.openjpa</groupId>
                     <artifactId>openjpa-maven-plugin</artifactId>
-                    <version>2.2.1</version>
                     <configuration>
                         <persistenceXmlFile>${project.basedir}/src/profiles/openjpa/META-INF/persistence.xml</persistenceXmlFile>
                         <includes>com/lsgllc/camel/datamodel/*Entity.class</includes>
