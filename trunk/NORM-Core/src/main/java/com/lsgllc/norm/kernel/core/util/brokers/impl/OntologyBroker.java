@@ -186,6 +186,7 @@ public class OntologyBroker<K extends String, V extends IOntologyBroker<K,V> > e
 //            cl = NormMorphGraphUtils.getGraphByPackageName(canonicalInterfaceName.substring(0, canonicalInterfaceName.lastIndexOf('.')),packages).getGraphClassLoader();
 //            Class clazz = cl.loadClass(canonicalInterfaceName,true);
 //            return clazz.newInstance();
+            //TODO: INCOMPLETE - Implement dynamic instance creation using IfaceClassGenerator and class loading
             return null;
 //        } catch (InstantiationException e) {
 //            e.printStackTrace();
@@ -212,6 +213,7 @@ public class OntologyBroker<K extends String, V extends IOntologyBroker<K,V> > e
     }
 
     public String newClass(String name) {
+        //TODO: INCOMPLETE - Implement dynamic class generation functionality
         return null;
     }
 

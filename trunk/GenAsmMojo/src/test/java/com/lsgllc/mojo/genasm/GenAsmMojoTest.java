@@ -55,8 +55,7 @@ public void after() throws Exception {
 */ 
 @Test
 public void testExecute() throws Exception { 
-//TODO: Test goes here... 
-} 
+}
 
 
 /** 
@@ -66,7 +65,6 @@ public void testExecute() throws Exception {
 */ 
 @Test
 public void testProcessClassFile() throws Exception { 
-//TODO: Test goes here... 
 /* 
 try { 
    Method method = GenAsmMojo.getClass().getMethod("processClassFile", String.class); 
@@ -86,7 +84,6 @@ try {
 */ 
 @Test
 public void testGetCanonicalPropertyFileNameMajor() throws Exception { 
-//TODO: Test goes here... 
 /* 
 try { 
    Method method = GenAsmMojo.getClass().getMethod("getCanonicalPropertyFileNameMajor", String.class); 
@@ -106,7 +103,6 @@ try {
 */ 
 @Test
 public void testGetFileNameMajor() throws Exception { 
-//TODO: Test goes here... 
 /* 
 try { 
    Method method = GenAsmMojo.getClass().getMethod("getFileNameMajor", String.class); 
@@ -119,4 +115,4 @@ try {
 */ 
 } 
 
-} 
+}  

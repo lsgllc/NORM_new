@@ -68,6 +68,7 @@ public class NormMorphGraphUtils {
 
 
     private static INormObjectStore getGraph(String graphName) {
+//        TODO: INCOMPLETE - Implement graph retrieval from dmmg ontology segment
 //        return (INormObjectStore) NormMorphGraphUtils.dmmg.get(graphName);
         return null;
     }
@@ -129,6 +130,7 @@ public class NormMorphGraphUtils {
          shortestPackagename = commonPackageName.toString().substring(0, commonPackageName.length() - 1);
          for (String packageName : packages) {
              if (!packageName.startsWith(shortestPackagename)) {
+//                 TODO: INCOMPLETE - Add proper exception handling for invalid graph properties
 //                 throw new DynaMorphInvalidGraphProperties("The package " + packageName + " is not part of " + shortestPackagename);
              }
          }
