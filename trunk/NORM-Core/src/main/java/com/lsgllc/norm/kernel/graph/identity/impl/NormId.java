@@ -45,6 +45,7 @@ public class NormId<T extends INormType.ITyped,K ,V > extends NormType<T> implem
     }
 
     public K getId() {
+        //TODO: INCOMPLETE - Implement getId method, should return key or different identifier
         return null;
     }
 }

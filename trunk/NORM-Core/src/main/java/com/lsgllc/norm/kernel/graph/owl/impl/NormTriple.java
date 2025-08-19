@@ -36,7 +36,6 @@ public class NormTriple<V extends Set<INormId<UUID>>> extends AbstractNormContai
 
     @Override
     public void setId(Object id) {
-
     }
 
 

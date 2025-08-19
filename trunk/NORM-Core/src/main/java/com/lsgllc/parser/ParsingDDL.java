@@ -79,6 +79,7 @@ public class ParsingDDL {
 
     protected static void printConstraint(String constraintInfo, Boolean outline){
         System.out.println("\t\tconstraint: " + constraintInfo);
+
     }
 
     protected static void printObjectNameList(String objListInfo){
